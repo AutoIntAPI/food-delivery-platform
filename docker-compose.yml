@@ -1,0 +1,98 @@
+version: "3.9"
+
+services:
+  api-gateway:
+    build:
+      context: .
+      dockerfile: services/api-gateway/Dockerfile
+    environment:
+      PORT: 8080
+      USERS_SERVICE_URL: http://users-service:4101
+      RESTAURANTS_SERVICE_URL: http://restaurants-service:4102
+      MENU_SERVICE_URL: http://menu-service:4103
+      ORDERS_SERVICE_URL: http://orders-service:4104
+      DRIVERS_SERVICE_URL: http://drivers-service:4105
+      PAYMENTS_SERVICE_URL: http://payments-service:4106
+      RATINGS_SERVICE_URL: http://ratings-service:4107
+      NOTIFICATIONS_SERVICE_URL: http://notifications-service:4108
+    ports:
+      - "8080:8080"
+    depends_on:
+      - users-service
+      - restaurants-service
+      - menu-service
+      - orders-service
+      - drivers-service
+      - payments-service
+      - ratings-service
+      - notifications-service
+
+  users-service:
+    build:
+      context: .
+      dockerfile: services/users-service/Dockerfile
+    environment:
+      PORT: 4101
+
+  restaurants-service:
+    build:
+      context: .
+      dockerfile: services/restaurants-service/Dockerfile
+    environment:
+      PORT: 4102
+
+  menu-service:
+    build:
+      context: .
+      dockerfile: services/menu-service/Dockerfile
+    environment:
+      PORT: 4103
+
+  orders-service:
+    build:
+      context: .
+      dockerfile: services/orders-service/Dockerfile
+    environment:
+      PORT: 4104
+      USERS_SERVICE_URL: http://users-service:4101
+      RESTAURANTS_SERVICE_URL: http://restaurants-service:4102
+      MENU_SERVICE_URL: http://menu-service:4103
+      DRIVERS_SERVICE_URL: http://drivers-service:4105
+      PAYMENTS_SERVICE_URL: http://payments-service:4106
+      NOTIFICATIONS_SERVICE_URL: http://notifications-service:4108
+    depends_on:
+      - users-service
+      - restaurants-service
+      - menu-service
+      - drivers-service
+      - payments-service
+      - notifications-service
+
+  drivers-service:
+    build:
+      context: .
+      dockerfile: services/drivers-service/Dockerfile
+    environment:
+      PORT: 4105
+
+  payments-service:
+    build:
+      context: .
+      dockerfile: services/payments-service/Dockerfile
+    environment:
+      PORT: 4106
+
+  ratings-service:
+    build:
+      context: .
+      dockerfile: services/ratings-service/Dockerfile
+    environment:
+      PORT: 4107
+
+  notifications-service:
+    build:
+      context: .
+      dockerfile: services/notifications-service/Dockerfile
+    environment:
+      PORT: 4108
+

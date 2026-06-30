@@ -1,0 +1,21 @@
+{
+  "name": "food-delivery-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "REST-only microservices monorepo for a food delivery platform",
+  "workspaces": [
+    "packages/*",
+    "services/*"
+  ],
+  "scripts": {
+    "start:gateway": "node services/api-gateway/server.js",
+    "start:users": "node services/users-service/server.js",
+    "start:restaurants": "node services/restaurants-service/server.js",
+    "start:menu": "node services/menu-service/server.js",
+    "start:orders": "node services/orders-service/server.js",
+    "start:drivers": "node services/drivers-service/server.js",
+    "start:payments": "node services/payments-service/server.js",
+    "start:ratings": "node services/ratings-service/server.js",
+    "start:notifications": "node services/notifications-service/server.js"
+  }
+}
