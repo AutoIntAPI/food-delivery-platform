@@ -23,28 +23,6 @@ const users = [
 const server = createServer(serviceName, async (req, res) => {
   const url = getJsonUrl(req);
 
-  if (req.method === "GET" && url.pathname === "/health") {
-    sendJson(res, 200, { service: serviceName, status: "ok", users: users.length });
-    return;
-  }
-
-  if (req.method === "GET" && url.pathname === "/users") {
-    sendJson(res, 200, { data: users });
-    return;
-  }
-
-  const userMatch = url.pathname.match(/^\/users\/([^/]+)$/);
-  if (req.method === "GET" && userMatch) {
-    const user = users.find((entry) => entry.id === userMatch[1]);
-    if (!user) {
-      sendJson(res, 404, { error: "User not found" });
-      return;
-    }
-
-    sendJson(res, 200, user);
-    return;
-  }
-
   notFound(res, serviceName);
 });
 
