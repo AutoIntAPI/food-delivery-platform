@@ -14,19 +14,7 @@ const assignments = [];
 const server = createServer(serviceName, async (req, res) => {
   const url = getJsonUrl(req);
 
-  if (req.method === "GET" && url.pathname === "/health") {
-    sendJson(res, 200, {
-      service: serviceName,
-      status: "ok",
-      availableDrivers: drivers.filter((driver) => driver.status === "available").length
-    });
-    return;
-  }
 
-  if (req.method === "GET" && url.pathname === "/drivers") {
-    sendJson(res, 200, { data: drivers });
-    return;
-  }
 
   if (req.method === "POST" && url.pathname === "/drivers/assign") {
     const body = await parseBody(req);
