@@ -1,6 +1,5 @@
 # Architecture
 
-
 ## High-Level Design
 
 This platform follows a synchronous REST microservice architecture. The API gateway fronts all public traffic and forwards it to domain services. The `orders-service` acts as the orchestrator for the critical checkout workflow.
