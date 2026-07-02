@@ -32,53 +32,53 @@ const server = createServer(serviceName, async (req, res) => {
     return;
   }
 
-  if (req.method === "POST" && url.pathname === "/menu/quote") {
-    const body = await parseBody(req);
-    const requestedItems = Array.isArray(body.items) ? body.items : [];
+  // if (req.method === "POST" && url.pathname === "/menu/quote") {
+  //   const body = await parseBody(req);
+  //   const requestedItems = Array.isArray(body.items) ? body.items : [];
 
-    if (!body.restaurantId || requestedItems.length === 0) {
-      sendJson(res, 400, { error: "restaurantId and items are required" });
-      return;
-    }
+  //   if (!body.restaurantId || requestedItems.length === 0) {
+  //     sendJson(res, 400, { error: "restaurantId and items are required" });
+  //     return;
+  //   }
 
-    const lineItems = [];
-    for (const entry of requestedItems) {
-      const item = menuItems.find(
-        (candidate) => candidate.id === entry.itemId && candidate.restaurantId === body.restaurantId
-      );
+  //   const lineItems = [];
+  //   for (const entry of requestedItems) {
+  //     const item = menuItems.find(
+  //       (candidate) => candidate.id === entry.itemId && candidate.restaurantId === body.restaurantId
+  //     );
 
-      if (!item) {
-        sendJson(res, 404, { error: `Menu item ${entry.itemId} is unavailable for restaurant ${body.restaurantId}` });
-        return;
-      }
+  //     if (!item) {
+  //       sendJson(res, 404, { error: `Menu item ${entry.itemId} is unavailable for restaurant ${body.restaurantId}` });
+  //       return;
+  //     }
 
-      const quantity = Number(entry.quantity || 1);
-      lineItems.push({
-        itemId: item.id,
-        name: item.name,
-        quantity,
-        unitPrice: item.price,
-        lineTotal: Number((item.price * quantity).toFixed(2))
-      });
-    }
+  //     const quantity = Number(entry.quantity || 1);
+  //     lineItems.push({
+  //       itemId: item.id,
+  //       name: item.name,
+  //       quantity,
+  //       unitPrice: item.price,
+  //       lineTotal: Number((item.price * quantity).toFixed(2))
+  //     });
+  //   }
 
-    const subtotal = Number(lineItems.reduce((sum, item) => sum + item.lineTotal, 0).toFixed(2));
-    const serviceFee = Number((subtotal * 0.08).toFixed(2));
-    const deliveryFee = subtotal >= 20 ? 1.5 : 3.0;
-    const total = Number((subtotal + serviceFee + deliveryFee).toFixed(2));
+  //   const subtotal = Number(lineItems.reduce((sum, item) => sum + item.lineTotal, 0).toFixed(2));
+  //   const serviceFee = Number((subtotal * 0.08).toFixed(2));
+  //   const deliveryFee = subtotal >= 20 ? 1.5 : 3.0;
+  //   const total = Number((subtotal + serviceFee + deliveryFee).toFixed(2));
 
-    sendJson(res, 200, {
-      restaurantId: body.restaurantId,
-      lineItems,
-      pricing: {
-        subtotal,
-        serviceFee,
-        deliveryFee,
-        total
-      }
-    });
-    return;
-  }
+  //   sendJson(res, 200, {
+  //     restaurantId: body.restaurantId,
+  //     lineItems,
+  //     pricing: {
+  //       subtotal,
+  //       serviceFee,
+  //       deliveryFee,
+  //       total
+  //     }
+  //   });
+  //   return;
+  // }
 
   notFound(res, serviceName);
 });
