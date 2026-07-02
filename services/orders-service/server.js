@@ -30,13 +30,43 @@ async function createOrder(body) {
 
   const draftOrderId = `order-${orders.length + 1}`;
   const user = await fetchJson(dependencies.users, `/users/${body.userId}`);
-  const quote = await fetchJson(dependencies.menu, "/menu/quote", {
-    method: "POST",
-    body: {
-      restaurantId: body.restaurantId,
-      items: body.items
+  // Fetch menu items for the restaurant and calculate the quote locally
+  const menuData = await fetchJson(dependencies.menu, `/restaurants/${body.restaurantId}/menu`);
+  const availableItems = menuData.items || [];
+
+  const lineItems = [];
+  for (const entry of body.items) {
+    const quantity = Number(entry.quantity || 1);
+    const item = availableItems.find((candidate) => candidate.id === entry.itemId);
+    if (!item) {
+      const err = new Error(`Menu item ${entry.itemId} is unavailable for restaurant ${body.restaurantId}`);
+      err.statusCode = 404;
+      throw err;
     }
-  });
+    const lineTotal = Number((item.price * quantity).toFixed(2));
+    lineItems.push({
+      itemId: item.id,
+      name: item.name,
+      quantity,
+      unitPrice: item.price,
+      lineTotal
+    });
+  }
+
+  const subtotal = Number(lineItems.reduce((sum, li) => sum + li.lineTotal, 0).toFixed(2));
+  const serviceFee = Number((subtotal * 0.08).toFixed(2));
+  const deliveryFee = subtotal >= 20 ? 1.5 : 3.0;
+  const total = Number((subtotal + serviceFee + deliveryFee).toFixed(2));
+
+  const quote = {
+    lineItems,
+    pricing: {
+      subtotal,
+      serviceFee,
+      deliveryFee,
+      total
+    }
+  };
 
   const restaurantDecision = await fetchJson(
     dependencies.restaurants,
