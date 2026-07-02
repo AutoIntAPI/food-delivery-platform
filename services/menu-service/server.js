@@ -36,8 +36,8 @@ const server = createServer(serviceName, async (req, res) => {
     const body = await parseBody(req);
     const requestedItems = Array.isArray(body.items) ? body.items : [];
 
-    if (!body.restaurantId || requestedItems.length === 0) {
-      sendJson(res, 400, { error: "restaurantId and items are required" });
+    if (!body.customerId || !body.restaurantId || requestedItems.length === 0) {
+      sendJson(res, 400, { error: "customerId, restaurantId, and items are required" });
       return;
     }
 
